@@ -1,3 +1,5 @@
+use rayon::prelude::*;
+
 enum Direction {
     Ascending,
     Descending,
@@ -13,6 +15,7 @@ fn part1(input: &str) -> u32 {
     input
         .trim()
         .lines()
+        .par_bridge()
         .filter(|line| {
             let numbers = line
                 .split_whitespace()
@@ -27,6 +30,7 @@ fn part2(input: &str) -> u32 {
     input
         .trim()
         .lines()
+        .par_bridge()
         .filter(|line| {
             let numbers = line
                 .split_whitespace()
