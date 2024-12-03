@@ -37,7 +37,6 @@ fn part2(input: &str) -> u32 {
                 .map(|word| word.parse::<u32>().unwrap())
                 .collect::<Vec<u32>>();
             (0..numbers.len())
-            .into_iter()
             .any(|i| {
                 let mut numbers = numbers.clone();
                 numbers.remove(i);
