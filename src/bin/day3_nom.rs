@@ -70,6 +70,7 @@ fn parse_part2(input: &str) -> Vec<Instruction> {
 fn part2(input: &str) -> u32 {
     parse_part2(&input)
         .into_iter()
+        .inspect(|i| println!("{:?}", i))
         .fold((Instruction::Do, 0), |acc, i| match (acc.0, i) {
             (Instruction::Do, Instruction::Mul(a, b)) => (acc.0, acc.1 + a * b),
             (_, Instruction::Dont) => (Instruction::Dont, acc.1),
