@@ -36,7 +36,6 @@ pub fn part1(input: &str) -> u32 {
     let rules_set = rules.into_iter().collect::<BTreeSet<_>>();
 
     lines
-
     .map(|line| line.split(",").map(|i| i.parse::<u32>().unwrap()).collect::<Vec<_>>())
     .filter(|pages| is_sorted(pages, &rules_set))
     .map(|line| *line.get(line.len() / 2).unwrap())
@@ -60,7 +59,7 @@ pub fn part2(input: &str) -> u32 {
     .map(|line| line.split(",").map(|i| i.parse::<u32>().unwrap()).collect::<Vec<_>>())
     .filter(|pages| !is_sorted(pages, &rules_set))
     .map(|pages| {
-        let mut pages = pages.clone();
+        let mut pages = pages.to_owned();
         let index = pages.len() / 2;
         let (_, median, _) = pages.select_nth_unstable_by(index, |a, b| page_compare(a, b, &rules_set));
 
