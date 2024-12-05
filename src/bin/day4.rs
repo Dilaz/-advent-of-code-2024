@@ -2,6 +2,8 @@ fn main() {
     let input = include_str!("../../inputs/day4.txt");
     println!("Part 1: {}", &part1(&input));
     println!("Part 2: {}", &part2(&input));
+
+    divan::main();
 }
 
 fn find_words(chars: &Vec<Vec<char>>, word: &str) -> u32 {
@@ -129,43 +131,62 @@ fn find_x(chars: &Vec<Vec<char>>, word: &str) -> u32 {
     count
 }
 
-fn part1(input: &str) -> u32 {
+pub fn part1(input: &str) -> u32 {
     find_words(&input.lines().map(|l| l.chars().collect()).collect(), "XMAS")
 }
 
-fn part2(input: &str) -> u32 {
+pub fn part2(input: &str) -> u32 {
     find_x(&input.lines().map(|l| l.chars().collect()).collect(), "MAS")
 }
 
 
-#[test]
-fn test_part1() {
-    let test = r#"MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX"#.to_string();
-    let result = part1(&test);
-    assert_eq!(result, 18)
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[test]
-fn test_part2() {
-    let test = r#"MMMSXXMASM
-MSAMXMSMSA
-AMXSXMAAMM
-MSAMASMSMX
-XMASAMXAMM
-XXAMMXXAMA
-SMSMSASXSS
-SAXAMASAAA
-MAMMMXMMMM
-MXMXAXMASX"#.to_string();
-    let result = part2(&test);
-    assert_eq!(result, 9)
+    #[test]
+    fn test_part1() {
+        let test = r#"MMMSXXMASM
+    MSAMXMSMSA
+    AMXSXMAAMM
+    MSAMASMSMX
+    XMASAMXAMM
+    XXAMMXXAMA
+    SMSMSASXSS
+    SAXAMASAAA
+    MAMMMXMMMM
+    MXMXAXMASX"#.to_string();
+        let result = part1(&test);
+        assert_eq!(result, 18)
+    }
+
+    #[test]
+    fn test_part2() {
+        let test = r#"MMMSXXMASM
+    MSAMXMSMSA
+    AMXSXMAAMM
+    MSAMASMSMX
+    XMASAMXAMM
+    XXAMMXXAMA
+    SMSMSASXSS
+    SAXAMASAAA
+    MAMMMXMMMM
+    MXMXAXMASX"#.to_string();
+        let result = part2(&test);
+        assert_eq!(result, 9)
+    }
+
+    #[divan::bench]
+    fn bench_part1() {
+       part1(divan::black_box(include_str!(
+            "../../inputs/day4.txt",
+        )));
+    }
+
+    #[divan::bench]
+    fn bench_part2() {
+        part2(divan::black_box(include_str!(
+            "../../inputs/day4.txt",
+        )));
+    }
 }
