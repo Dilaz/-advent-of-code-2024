@@ -29,3 +29,13 @@ name = "day-04-bench"
 path = "src/bin/day4.rs"
 harness = false
 
+[[bin]]
+name = "day5"
+
+[[bench]]
+name = "day-05-bench"
+path = "src/bin/day5.rs"
+harness = false
+
+[dev-dependencies]
+divan = "0.1.16"
