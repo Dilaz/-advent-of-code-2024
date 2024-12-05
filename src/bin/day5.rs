@@ -8,8 +8,18 @@ fn main() {
     divan::main();
 }
 
-fn is_invalid(first: u32, second: u32, rules: &BTreeSet<(u32, u32)>) -> bool {
-    rules.contains(&(second, first))
+fn page_compare(a: &u32, b: &u32, rules: &BTreeSet<(u32, u32)>) -> std::cmp::Ordering {
+    if rules.contains(&(*a, *b)) {
+        std::cmp::Ordering::Less
+    } else if rules.contains(&(*b, *a)) {
+        std::cmp::Ordering::Greater
+    } else {
+        std::cmp::Ordering::Equal
+    }
+}
+
+fn is_sorted(pages: &Vec<u32>, rules: &BTreeSet<(u32, u32)>) -> bool {
+    pages.is_sorted_by(|a, b| !rules.contains(&(*b, *a)))
 }
 
 pub fn part1(input: &str) -> u32 {
@@ -26,10 +36,9 @@ pub fn part1(input: &str) -> u32 {
     let rules_set = rules.into_iter().collect::<BTreeSet<_>>();
 
     lines
+
     .map(|line| line.split(",").map(|i| i.parse::<u32>().unwrap()).collect::<Vec<_>>())
-    .filter(|pages| {
-        pages.iter().enumerate().all(|(i, page)| !pages.iter().skip(i + 1).any(|page2| is_invalid(*page, *page2, &rules_set)))
-    })
+    .filter(|pages| is_sorted(pages, &rules_set))
     .map(|line| *line.get(line.len() / 2).unwrap())
     .sum()
 }
@@ -49,23 +58,14 @@ pub fn part2(input: &str) -> u32 {
 
     lines
     .map(|line| line.split(",").map(|i| i.parse::<u32>().unwrap()).collect::<Vec<_>>())
-    .filter(|pages| {
-        !pages.iter().enumerate().all(|(i, page)| !pages.iter().skip(i + 1).any(|page2| is_invalid(*page, *page2, &rules_set)))
-    })
+    .filter(|pages| !is_sorted(pages, &rules_set))
     .map(|pages| {
         let mut pages = pages.clone();
-        pages.sort_by(|a, b| {
-            if rules_set.contains(&(*a, *b)) {
-                std::cmp::Ordering::Less
-            } else if rules_set.contains(&(*b, *a)) {
-                std::cmp::Ordering::Greater
-            } else {
-                std::cmp::Ordering::Equal
-            }
-        });
-        pages
+        let index = pages.len() / 2;
+        let (_, median, _) = pages.select_nth_unstable_by(index, |a, b| page_compare(a, b, &rules_set));
+
+        *median
     })
-    .map(|line| *line.get(line.len() / 2).unwrap())
     .sum()
 }
 
