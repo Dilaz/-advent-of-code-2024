@@ -58,7 +58,7 @@ struct AocMap {
     height: isize,
 }
 
-fn get_guard_route(map: &AocMap) -> Route {
+fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Route {
     let mut guard_position = map.guard_position.clone();
     let mut guard_direction = Direction::Up;
     let mut visited = BTreeSet::new();
@@ -71,7 +71,7 @@ fn get_guard_route(map: &AocMap) -> Route {
             break;
         }
 
-        if map.obstacles.contains(&new_position) {
+        if map.obstacles.contains(&new_position) || extra_obsticle.map_or(false, |o| o == &new_position) {
             guard_direction = guard_direction.turn();
             continue;
         }
@@ -113,7 +113,7 @@ fn parse_map(input: &str) -> AocMap {
 pub fn part1(input: &str) -> u32 {
     let map = parse_map(&input);
 
-    match get_guard_route(&map) {
+    match get_guard_route(&map, None) {
         Route::Finished(route) => route.len() as u32,
         _ => 0,
     }
@@ -122,7 +122,7 @@ pub fn part1(input: &str) -> u32 {
 pub fn part2(input: &str) -> u32 {
     let map = parse_map(&input);
 
-    let visited = get_guard_route(&map);
+    let visited = get_guard_route(&map, None);
 
     match visited {
         Route::Finished(route) => {
@@ -134,10 +134,7 @@ pub fn part2(input: &str) -> u32 {
                     return false;
                 }
 
-                let mut map = map.clone();
-                map.obstacles.insert((*x, *y));
-
-                get_guard_route(&map) == Route::Loop
+                get_guard_route(&map, Some(&(*x, *y))) == Route::Loop
             }).count() as u32
         },
         _ => 0,
