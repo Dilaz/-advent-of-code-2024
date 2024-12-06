@@ -1,4 +1,4 @@
-use std::collections::BTreeSet;
+use std::collections::HashSet;
 
 use rayon::prelude::*;
 
@@ -10,7 +10,7 @@ fn main() {
     divan::main();
 }
 
-#[derive(Debug, PartialEq, Eq, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Ord, Clone, Copy, Hash)]
 enum Direction {
     Up,
     Down,
@@ -28,7 +28,7 @@ impl Direction {
         }
     }
 
-    fn to_coord(&self) -> (isize, isize) {
+    fn to_tuple(&self) -> (isize, isize) {
         match self {
             Direction::Up => (0, -1),
             Direction::Down => (0, 1),
@@ -38,21 +38,21 @@ impl Direction {
     }
 }
 
-#[derive(Debug, PartialEq)]
-enum Route {
-    Finished(Vec<(isize, isize)>),
-    Loop,
-}
-
 impl PartialOrd for Direction {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
+#[derive(Debug, PartialEq)]
+enum Route {
+    Finished(Vec<(isize, isize)>),
+    Loop,
+}
+
 #[derive(Debug, Clone)]
 struct AocMap {
-    obstacles: BTreeSet<(isize, isize)>,
+    obstacles: HashSet<(isize, isize)>,
     guard_position: (isize, isize),
     width: isize,
     height: isize,
@@ -62,10 +62,10 @@ fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Rou
     let mut guard_position = map.guard_position.clone();
     let mut guard_direction = Direction::Up;
     let mut visited = vec![];
-    let mut visited_with_direction = BTreeSet::new();
+    let mut visited_with_direction = HashSet::new();
 
     loop {
-        let (dx, dy) = guard_direction.to_coord();
+        let (dx, dy) = guard_direction.to_tuple();
         let new_position = (guard_position.0 + dx, guard_position.1 + dy);
         if new_position.0 < 0 || new_position.0 >= map.width || new_position.1 < 0 || new_position.1 >= map.height {
             break;
@@ -90,7 +90,7 @@ fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Rou
 
 fn parse_map(input: &str) -> AocMap {
     let mut guard_position = (0, 0);
-    let mut obstacles = BTreeSet::new();
+    let mut obstacles = HashSet::new();
 
     input
     .lines().enumerate()
@@ -114,7 +114,7 @@ pub fn part1(input: &str) -> u32 {
     let map = parse_map(&input);
 
     match get_guard_route(&map, None) {
-        Route::Finished(route) => route.len() as u32,
+        Route::Finished(route) => route.into_iter().collect::<HashSet<_>>().len() as u32,
         _ => 0,
     }
 }
@@ -126,7 +126,10 @@ pub fn part2(input: &str) -> u32 {
 
     match visited {
         Route::Finished(route) => {
-            route.into_par_iter()
+            route
+            .into_iter()
+            .collect::<HashSet<_>>()
+            .into_par_iter()
             .filter(|(x, y)| {
                 // Skip starting position
                 if *x == map.guard_position.0 && *y == map.guard_position.1 {
@@ -134,7 +137,8 @@ pub fn part2(input: &str) -> u32 {
                 }
 
                 get_guard_route(&map, Some(&(*x, *y))) == Route::Loop
-            }).count() as u32
+            })
+            .count() as u32
         },
         _ => 0,
     }
@@ -175,6 +179,22 @@ mod tests {
 ......#..."#.to_string();
         let result = part2(&test);
         assert_eq!(result, 6)
+    }
+
+    #[test]
+    fn test_loop() {
+        let test = r#"....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......##.."#.to_string();
+        let result = get_guard_route(&parse_map(&test), None);
+        assert_eq!(result, Route::Loop)
     }
 
     #[divan::bench]
