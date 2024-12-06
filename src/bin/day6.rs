@@ -40,7 +40,7 @@ impl Direction {
 
 #[derive(Debug, PartialEq)]
 enum Route {
-    Finished(BTreeSet<(isize, isize)>),
+    Finished(Vec<(isize, isize)>),
     Loop,
 }
 
@@ -61,7 +61,7 @@ struct AocMap {
 fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Route {
     let mut guard_position = map.guard_position.clone();
     let mut guard_direction = Direction::Up;
-    let mut visited = BTreeSet::new();
+    let mut visited = vec![];
     let mut visited_with_direction = BTreeSet::new();
 
     loop {
@@ -82,7 +82,7 @@ fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Rou
             return Route::Loop;
         }
 
-        visited.insert(guard_position);
+        visited.push(guard_position);
     }
 
     Route::Finished(visited)
@@ -126,7 +126,6 @@ pub fn part2(input: &str) -> u32 {
 
     match visited {
         Route::Finished(route) => {
-            let route = route.iter().collect::<Vec<_>>();
             route.into_par_iter()
             .filter(|(x, y)| {
                 // Skip starting position
