@@ -16,6 +16,23 @@ enum Operation {
     Concat,
 }
 
+#[allow(dead_code)]
+trait Concat {
+    fn concat(&self, other: u32) -> u64;
+}
+impl Concat for u64 {
+    fn concat(&self, other: u32) -> u64 {
+        let mut num = other;
+        let mut mul = 1_u32;
+        while num > 0 {
+            num /= 10;
+            mul *= 10;
+        }
+
+        *self * mul as u64 + other as u64
+    }
+}
+
 fn parse(input: &str) -> IResult<&str, Vec<(u64, Vec<u32>)>> {
     let result = separated_list1(
         line_ending,
@@ -23,7 +40,8 @@ fn parse(input: &str) -> IResult<&str, Vec<(u64, Vec<u32>)>> {
             complete::u64,
             tag(": "),
             separated_list1(
-                tag(" "), complete::u32
+                tag(" "),
+                 complete::u32
             )
     ))(input)?
     .1
@@ -31,16 +49,17 @@ fn parse(input: &str) -> IResult<&str, Vec<(u64, Vec<u32>)>> {
     .map(|(a, b)| (a, b))
     .collect();
 
-    Ok(("", result))
+    Ok((input, result))
 }
 
 fn calculate(numbers: &[u32], sum: u64, result: u64, operations: &[Operation]) -> bool {
-    let num = numbers[0];
+    let num = *numbers.first().unwrap();
     operations.iter().any(|operation| {
         let new_sum = match operation {
             Operation::Add => sum + num as u64,
             Operation::Multiply => sum * num as u64,
-            Operation::Concat => (sum * 10_u64.pow(f64::log10(num as f64) as u32 + 1)) + num as u64,
+            Operation::Concat => (sum * 10_u64.pow(num.ilog10() + 1)) + num as u64,
+            // Operation::Concat => sum.concat(num),
         };
 
         if new_sum == result && numbers.len() == 1 {
@@ -128,6 +147,13 @@ mod tests {
 292: 11 6 16 20"#.to_string();
         let result = part2(&test);
         assert_eq!(result, 11387)
+    }
+
+    #[test]
+    fn test_concat() {
+        assert_eq!(12_u64.concat(345), 12345);
+        assert_eq!(1_u64.concat(345), 1345);
+        assert_eq!(123_u64.concat(45), 12345);
     }
 
     #[divan::bench]
