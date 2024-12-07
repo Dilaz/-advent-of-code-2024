@@ -78,7 +78,7 @@ fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Rou
 
         guard_position = new_position;
 
-        if !visited_with_direction.insert((guard_position, guard_direction)) {
+        if extra_obsticle.is_some() && !visited_with_direction.insert((guard_position, guard_direction)) {
             return Route::Loop;
         }
 
