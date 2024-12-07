@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 divan = "0.1.17"
+itertools = "0.13.0"
 nom = "7.1.3"
 rayon = "1.10.0"
 regex = "1.11.1"
@@ -43,6 +44,14 @@ name = "day6"
 [[bench]]
 name = "day-06-bench"
 path = "src/bin/day6.rs"
+harness = false
+
+[[bin]]
+name = "day7"
+
+[[bench]]
+name = "day-07-bench"
+path = "src/bin/day7.rs"
 harness = false
 
 [dev-dependencies]
