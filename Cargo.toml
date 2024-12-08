@@ -12,55 +12,111 @@ regex = "1.11.1"
 
 [[bin]]
 name = "day1"
+bench = false
+test = true
+
+[[bench]]
+name = "day1_bench"
+path = "src/bin/day1.rs"
+bench = true
+harness = false
+test = false
 
 [[bin]]
 name = "day2"
+bench = false
+test = true
+
+[[bench]]
+name = "day2_bench"
+path = "src/bin/day2.rs"
+bench = true
+harness = false
+test = false
 
 [[bin]]
 name = "day3"
+bench = false
+test = true
+
+[[bench]]
+name = "day3_bench"
+path = "src/bin/day3.rs"
+bench = true
+harness = false
+test = false
 
 [[bin]]
 name = "day3_nom"
+bench = false
+test = true
+
+[[bench]]
+name = "day3_nom_bench"
+path = "src/bin/day3_nom.rs"
+bench = true
+harness = false
+test = false
 
 [[bin]]
 name = "day4"
+bench = false
+test = true
 
 [[bench]]
-name = "day-04-bench"
+name = "day4_bench"
 path = "src/bin/day4.rs"
+bench = true
 harness = false
+test = false
 
 [[bin]]
 name = "day5"
+bench = false
+test = true
 
 [[bench]]
-name = "day-05-bench"
+name = "day5_bench"
 path = "src/bin/day5.rs"
+bench = true
 harness = false
+test = false
 
 [[bin]]
 name = "day6"
+bench = false
+test = true
 
 [[bench]]
-name = "day-06-bench"
+name = "day6_bench"
 path = "src/bin/day6.rs"
+bench = true
 harness = false
+test = false
 
 [[bin]]
 name = "day7"
+bench = false
+test = true
 
 [[bench]]
-name = "day-07-bench"
+name = "day7_bench"
 path = "src/bin/day7.rs"
+bench = true
 harness = false
+test = false
 
 [[bin]]
 name = "day8"
+bench = false
+test = true
 
 [[bench]]
-name = "day-08-bench"
+name = "day8_bench"
 path = "src/bin/day8.rs"
+bench = true
 harness = false
+test = false
 
 [dev-dependencies]
 divan = "0.1.16"

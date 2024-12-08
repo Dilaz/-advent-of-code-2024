@@ -9,6 +9,8 @@ fn main() {
     let input = include_str!("../../inputs/day2.txt");
     println!("Part 1: {}", &part1(input));
     println!("Part 2: {}", &part2(input));
+
+    divan::main();
 }
 
 fn part1(input: &str) -> u32 {
@@ -87,28 +89,47 @@ fn is_safe(numbers: &Vec<u32>) -> bool {
     true
 }
 
-#[test]
-fn test_part1() {
-    let test = r#"7 6 4 2 1
-1 2 7 8 9
-9 7 6 2 1
-1 3 2 4 5
-8 6 4 4 1
-1 3 6 7 9"#
-        .to_string();
-    let result = part1(&test);
-    assert_eq!(result, 2)
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[test]
-fn test_part2() {
-    let test = r#"7 6 4 2 1
+    #[test]
+    fn test_part1() {
+        let test = r#"7 6 4 2 1
 1 2 7 8 9
 9 7 6 2 1
 1 3 2 4 5
 8 6 4 4 1
 1 3 6 7 9"#
-        .to_string();
-    let result = part2(&test);
-    assert_eq!(result, 4)
+            .to_string();
+        let result = part1(&test);
+        assert_eq!(result, 2)
+    }
+
+    #[test]
+    fn test_part2() {
+        let test = r#"7 6 4 2 1
+1 2 7 8 9
+9 7 6 2 1
+1 3 2 4 5
+8 6 4 4 1
+1 3 6 7 9"#
+            .to_string();
+        let result = part2(&test);
+        assert_eq!(result, 4)
+    }
+
+    #[divan::bench]
+    fn bench_part1() {
+       part1(divan::black_box(include_str!(
+            "../../inputs/day2.txt",
+        )));
+    }
+
+    #[divan::bench]
+    fn bench_part2() {
+        part2(divan::black_box(include_str!(
+            "../../inputs/day2.txt",
+        )));
+    }
 }

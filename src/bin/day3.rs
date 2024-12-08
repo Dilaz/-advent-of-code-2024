@@ -4,6 +4,8 @@ fn main() {
     let input = include_str!("../../inputs/day3.txt");
     println!("Part 1: {}", &part1(input));
     println!("Part 2: {}", &part2(input));
+
+    divan::main();
 }
 
 fn part1(input: &str) -> u32 {
@@ -34,17 +36,35 @@ fn part2(input: &str) -> u32 {
     .sum()
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[test]
-fn test_part1() {
-    let test = r#"xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"#.to_string();
-    let result = part1(&test);
-    assert_eq!(result, 161)
-}
+    #[test]
+    fn test_part1() {
+        let test = r#"xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"#.to_string();
+        let result = part1(&test);
+        assert_eq!(result, 161)
+    }
 
-#[test]
-fn test_part2() {
-    let test = r#"xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"#.to_string();
-    let result = part2(&test);
-    assert_eq!(result, 48)
+    #[test]
+    fn test_part2() {
+        let test = r#"xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"#.to_string();
+        let result = part2(&test);
+        assert_eq!(result, 48)
+    }
+
+    #[divan::bench]
+    fn bench_part1() {
+       part1(divan::black_box(include_str!(
+            "../../inputs/day3.txt",
+        )));
+    }
+
+    #[divan::bench]
+    fn bench_part2() {
+        part2(divan::black_box(include_str!(
+            "../../inputs/day3.txt",
+        )));
+    }
 }

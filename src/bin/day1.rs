@@ -5,6 +5,8 @@ fn main() {
     let input = include_str!("../../inputs/day1.txt");
     println!("Part 1: {}", &part1(input));
     println!("Part 2: {}", &part2(input));
+
+    divan::main();
 }
 
 fn part1(input: &str) -> u32 {
@@ -37,27 +39,44 @@ fn part2(input: &str) -> u32 {
     .fold(0, |acc, x| acc + x * *right.entry(x).or_default())
 }
 
-
-#[test]
-fn test_part1() {
-    let test = r#"3   4
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_part1() {
+        let test = r#"3   4
 4   3
 2   5
 1   3
 3   9
 3   3"#.to_string();
-    let result = part1(&test);
-    assert_eq!(result, 11)
-}
+        let result = part1(&test);
+        assert_eq!(result, 11)
+    }
 
-#[test]
-fn test_part2() {
-    let test = r#"3   4
+    #[test]
+    fn test_part2() {
+        let test = r#"3   4
 4   3
 2   5
 1   3
 3   9
 3   3"#.to_string();
-    let result = part2(&test);
-    assert_eq!(result, 31)
+        let result = part2(&test);
+        assert_eq!(result, 31)
+    }
+
+    #[divan::bench]
+    fn bench_part1() {
+       part1(divan::black_box(include_str!(
+            "../../inputs/day1.txt",
+        )));
+    }
+
+    #[divan::bench]
+    fn bench_part2() {
+        part2(divan::black_box(include_str!(
+            "../../inputs/day1.txt",
+        )));
+    }
 }
