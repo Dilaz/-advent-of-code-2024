@@ -54,6 +54,14 @@ name = "day-07-bench"
 path = "src/bin/day7.rs"
 harness = false
 
+[[bin]]
+name = "day8"
+
+[[bench]]
+name = "day-08-bench"
+path = "src/bin/day8.rs"
+harness = false
+
 [dev-dependencies]
 divan = "0.1.16"
 
