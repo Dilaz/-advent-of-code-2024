@@ -1,4 +1,5 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, HashSet};
+use glam::IVec2;
 use itertools::Itertools;
 
 fn main() {
@@ -9,68 +10,58 @@ fn main() {
     divan::main();
 }
 
-fn count_antinodes(antennas: &BTreeMap<char, Vec<(isize, isize)>>, map_width: usize, map_height: usize, harmonics: bool) -> u32 {
+fn count_antinodes(antennas: &BTreeMap<char, Vec<IVec2>>, map_width: i32, map_height: i32, harmonics: bool) -> u32 {
     antennas.iter()
     .flat_map(|(_, coords)| {
-        coords.iter().combinations(2).flat_map(|antennas| {
-            let mut antennas = antennas.into_iter();
-            let sat1 = antennas.next().unwrap();
-            let sat2 = antennas.next().unwrap();
-
-            let dx = sat1.0 - sat2.0;
-            let dy = sat1.1 - sat2.1;
+        coords.iter().tuple_combinations().flat_map(|(antenna1, antenna2)| {
+            let delta = antenna1 - antenna2;
             
             if harmonics {
-                let mut coords = vec![];
-                let mut x = sat1.0;
-                let mut y = sat1.1;
+                let mut coords: Vec<IVec2> = vec![];
+                let mut c = *antenna1;
 
-                while x < map_width as isize && x >= 0 && y < map_height as isize && y >= 0 {
-                    coords.push((x, y));
-                    x += dx;
-                    y += dy;
+                while c.x < map_width && c.x >= 0 && c.y < map_height && c.y >= 0 {
+                    coords.push(c);
+                    c += delta;
                 }
 
-                let mut x = sat2.0;
-                let mut y = sat2.1;
+                let mut c = *antenna2;
 
-                while x < map_width as isize && x >= 0 && y < map_height as isize && y >= 0 {
-                    coords.push((x, y));
-                    x -= dx;
-                    y -= dy;
+                while c.x < map_width && c.x >= 0 && c.y < map_height && c.y >= 0 {
+                    coords.push(c);
+                    c -= delta;
                 }
-
 
                 coords
             } else {
-                vec![(sat1.0 + dx, sat1.1 + dy), (sat2.0 - dx, sat2.1 - dy)]
+                vec![antenna1 + delta, antenna2 - delta]
             }
         })
-        .filter(|coord| coord.0 >= 0 && coord.0 < map_width as isize && coord.1 >= 0 && coord.1 < map_height as isize)
+        .filter(|c| c.x >= 0 && c.x < map_width && c.y >= 0 && c.y < map_height)
     })
-    .collect::<BTreeSet<(isize, isize)>>()
+    .collect::<HashSet<IVec2>>()
     .into_iter()
     .len() as u32
 }
 
 fn part1(input: &str) -> u32 {
     let antennas = parse_input(input);
-    
-    count_antinodes(&antennas, input.lines().count(), input.lines().next().unwrap().chars().count(), false)
+
+    count_antinodes(&antennas, input.lines().count() as i32, input.lines().next().unwrap().chars().count() as i32, false)
 }
 
 fn part2(input: &str) -> u32 {
     let antennas = parse_input(input);
 
-count_antinodes(&antennas, input.lines().count(), input.lines().next().unwrap().chars().count(), true)
+    count_antinodes(&antennas, input.lines().count() as i32, input.lines().next().unwrap().chars().count() as i32, true)
 }
 
-fn parse_input(input: &str) -> BTreeMap<char, Vec<(isize, isize)>> {
-    let mut antennas  = BTreeMap::<char, Vec<(isize, isize)>>::new();
+fn parse_input(input: &str) -> BTreeMap<char, Vec<IVec2>> {
+    let mut antennas  = BTreeMap::<char, Vec<IVec2>>::new();
     input.lines().enumerate()
     .for_each(|(y, line)| line.chars().enumerate().for_each(|(x, c)| match c {
         'a'..='z' | 'A'..='Z' | '0'..='9'  => {
-            antennas.entry(c).and_modify(|v| v.push((x as isize, y as isize))).or_insert(vec![(x as isize, y as isize)]);
+            antennas.entry(c).and_modify(|v| v.push(IVec2::new(x as i32, y as i32))).or_insert(vec![IVec2::new(x as i32, y as i32)]);
         }
         _ => {}
     }));
