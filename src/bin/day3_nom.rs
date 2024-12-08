@@ -10,8 +10,8 @@ use nom::{
 
 fn main() {
     let input = include_str!("../../inputs/day3.txt");
-    println!("Part 1: {}", &part1(&input));
-    println!("Part 2: {}", &part2(&input));
+    println!("Part 1: {}", &part1(input));
+    println!("Part 2: {}", &part2(input));
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -42,7 +42,7 @@ fn parse_part1(input: &str) -> Vec<Instruction> {
 }
 
 fn part1(input: &str) -> u32 {
-    parse_part1(&input)
+    parse_part1(input)
         .into_iter()
         .map(|i| match i {
             Instruction::Mul(a, b) => a * b,
@@ -68,7 +68,7 @@ fn parse_part2(input: &str) -> Vec<Instruction> {
 }
 
 fn part2(input: &str) -> u32 {
-    parse_part2(&input)
+    parse_part2(input)
         .into_iter()
         .inspect(|i| println!("{:?}", i))
         .fold((Instruction::Do, 0), |acc, i| match (acc.0, i) {

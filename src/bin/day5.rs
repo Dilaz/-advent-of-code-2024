@@ -2,8 +2,8 @@ use std::collections::BTreeSet;
 
 fn main() {
     let input = include_str!("../../inputs/day5.txt");
-    println!("Part 1: {}", &part1(&input));
-    println!("Part 2: {}", &part2(&input));
+    println!("Part 1: {}", &part1(input));
+    println!("Part 2: {}", &part2(input));
 
     divan::main();
 }
@@ -18,14 +18,14 @@ fn page_compare(a: &u32, b: &u32, rules: &BTreeSet<(u32, u32)>) -> std::cmp::Ord
     }
 }
 
-fn is_sorted(pages: &Vec<u32>, rules: &BTreeSet<(u32, u32)>) -> bool {
+fn is_sorted(pages: &[u32], rules: &BTreeSet<(u32, u32)>) -> bool {
     pages.is_sorted_by(|a, b| !rules.contains(&(*b, *a)))
 }
 
 pub fn part1(input: &str) -> u32 {
     let mut rules = vec![];
-    let mut lines = input.lines();
-    while let Some(line) = lines.next() {
+    let mut split = input.split("\n\n");
+    for line in split.next().unwrap().lines() {
         if line.is_empty() {
             break;
         }
@@ -35,7 +35,7 @@ pub fn part1(input: &str) -> u32 {
     }
     let rules_set = rules.into_iter().collect::<BTreeSet<_>>();
 
-    lines
+    split.next().unwrap().lines()
     .map(|line| line.split(",").map(|i| i.parse::<u32>().unwrap()).collect::<Vec<_>>())
     .filter(|pages| is_sorted(pages, &rules_set))
     .map(|line| *line.get(line.len() / 2).unwrap())
@@ -44,8 +44,8 @@ pub fn part1(input: &str) -> u32 {
 
 pub fn part2(input: &str) -> u32 {
     let mut rules = vec![];
-    let mut lines = input.lines();
-    while let Some(line) = lines.next() {
+    let mut split = input.split("\n\n");
+    for line in split.next().unwrap().lines() {
         if line.is_empty() {
             break;
         }
@@ -55,7 +55,7 @@ pub fn part2(input: &str) -> u32 {
     }
     let rules_set = rules.into_iter().collect::<BTreeSet<_>>();
 
-    lines
+    split.next().unwrap().lines()
     .map(|line| line.split(",").map(|i| i.parse::<u32>().unwrap()).collect::<Vec<_>>())
     .filter(|pages| !is_sorted(pages, &rules_set))
     .map(|pages| {

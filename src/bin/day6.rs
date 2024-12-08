@@ -4,13 +4,13 @@ use rayon::prelude::*;
 
 fn main() {
     let input = include_str!("../../inputs/day6.txt");
-    println!("Part 1: {}", &part1(&input));
-    println!("Part 2: {}", &part2(&input));
+    println!("Part 1: {}", &part1(input));
+    println!("Part 2: {}", &part2(input));
 
     divan::main();
 }
 
-#[derive(Debug, PartialEq, Eq, Ord, Clone, Copy, Hash)]
+#[derive(Debug, PartialEq, Eq, Ord, PartialOrd, Clone, Copy, Hash)]
 enum Direction {
     Up,
     Down,
@@ -28,19 +28,13 @@ impl Direction {
         }
     }
 
-    fn to_tuple(&self) -> (isize, isize) {
+    fn to_tuple(self) -> (isize, isize) {
         match self {
             Direction::Up => (0, -1),
             Direction::Down => (0, 1),
             Direction::Left => (-1, 0),
             Direction::Right => (1, 0),
         }
-    }
-}
-
-impl PartialOrd for Direction {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
     }
 }
 
@@ -59,7 +53,7 @@ struct AocMap {
 }
 
 fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Route {
-    let mut guard_position = map.guard_position.clone();
+    let mut guard_position = map.guard_position;
     let mut guard_direction = Direction::Up;
     let mut visited = vec![];
     let mut visited_with_direction = HashSet::new();
@@ -78,7 +72,7 @@ fn get_guard_route(map: &AocMap, extra_obsticle: Option<&(isize, isize)>) -> Rou
 
         guard_position = new_position;
 
-        if extra_obsticle.is_some() && !visited_with_direction.insert((guard_position, guard_direction)) {
+        if !visited_with_direction.insert((guard_position, guard_direction)) {
             return Route::Loop;
         }
 
@@ -111,7 +105,7 @@ fn parse_map(input: &str) -> AocMap {
 }
 
 pub fn part1(input: &str) -> u32 {
-    let map = parse_map(&input);
+    let map = parse_map(input);
 
     match get_guard_route(&map, None) {
         Route::Finished(route) => route.into_iter().collect::<HashSet<_>>().len() as u32,
@@ -120,7 +114,7 @@ pub fn part1(input: &str) -> u32 {
 }
 
 pub fn part2(input: &str) -> u32 {
-    let map = parse_map(&input);
+    let map = parse_map(input);
 
     let visited = get_guard_route(&map, None);
 

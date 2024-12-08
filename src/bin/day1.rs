@@ -3,14 +3,14 @@ use std::{collections::HashMap, iter::zip};
 
 fn main() {
     let input = include_str!("../../inputs/day1.txt");
-    println!("Part 1: {}", &part1(&input));
-    println!("Part 2: {}", &part2(&input));
+    println!("Part 1: {}", &part1(input));
+    println!("Part 2: {}", &part2(input));
 }
 
 fn part1(input: &str) -> u32 {
     let mut left = vec![];
     let mut right = vec![];
-    for line in input.lines().into_iter() {
+    for line in input.lines() {
         let mut words = line.split_whitespace();
         left.push(words.next().unwrap().parse::<i32>().unwrap());
         right.push(words.next().unwrap().parse::<i32>().unwrap());
@@ -19,15 +19,15 @@ fn part1(input: &str) -> u32 {
     left.sort();
     right.sort();
 
-    zip(left.into_iter(), right.into_iter())
-    .map(|(l, r)| (l - r).abs())
-    .fold(0, |acc, x| acc + x) as u32
+    zip(left.iter(), right.iter())
+    .map(|(l, r)| l.abs_diff(*r))
+    .sum()
 }
 
 fn part2(input: &str) -> u32 {
     let mut left = vec![];
     let mut right = HashMap::new();
-    for line in input.lines().into_iter() {
+    for line in input.lines() {
         let mut words = line.split_whitespace();
         left.push(words.next().unwrap().parse::<u32>().unwrap());
         right.entry(words.next().unwrap().parse::<u32>().unwrap()).and_modify(|f| *f += 1).or_insert(1);

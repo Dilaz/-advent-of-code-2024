@@ -3,8 +3,8 @@ use rayon::prelude::*;
 
 fn main() {
     let input = include_str!("../../inputs/day7.txt");
-    println!("Part 1: {}", &part1(&input));
-    println!("Part 2: {}", &part2(&input));
+    println!("Part 1: {}", &part1(input));
+    println!("Part 2: {}", &part2(input));
 
     divan::main();
 }
@@ -46,7 +46,6 @@ fn parse(input: &str) -> IResult<&str, Vec<(u64, Vec<u32>)>> {
     ))(input)?
     .1
     .into_iter()
-    .map(|(a, b)| (a, b))
     .collect();
 
     Ok((input, result))
@@ -82,10 +81,10 @@ fn part1(input: &str) -> u64 {
     .filter(|(result, numbers)| {
         // If the result is smaller than the sum of all numbers (except for 1), it's impossible to reach the result
         let min = numbers.iter().map(|x| *x as u64).filter(|x| *x != 1).sum();
-        if *result < min {
-            return false
-        } else if *result == min {
-            return true
+        match result.cmp(&min) {
+            std::cmp::Ordering::Less => return false,
+            std::cmp::Ordering::Equal => return true,
+            std::cmp::Ordering::Greater => {}
         }
 
         calculate(&numbers[1..], numbers[0] as u64, *result, &operations)
@@ -102,10 +101,10 @@ fn part2(input: &str) -> u64 {
     .into_par_iter()
     .filter(|(result, numbers)| {
         let min = numbers.iter().map(|x| *x as u64).filter(|x| *x != 1).sum();
-        if *result < min {
-            return false
-        } else if *result == min {
-            return true
+        match result.cmp(&min) {
+            std::cmp::Ordering::Less => return false,
+            std::cmp::Ordering::Equal => return true,
+            std::cmp::Ordering::Greater => {}
         }
 
         calculate(&numbers[1..], numbers[0] as u64, *result, &operations)

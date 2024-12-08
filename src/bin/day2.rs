@@ -7,8 +7,8 @@ enum Direction {
 
 fn main() {
     let input = include_str!("../../inputs/day2.txt");
-    println!("Part 1: {}", &part1(&input));
-    println!("Part 2: {}", &part2(&input));
+    println!("Part 1: {}", &part1(input));
+    println!("Part 2: {}", &part2(input));
 }
 
 fn part1(input: &str) -> u32 {

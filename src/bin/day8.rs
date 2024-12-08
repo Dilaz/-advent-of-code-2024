@@ -54,19 +54,18 @@ fn count_antinodes(antennas: &BTreeMap<char, Vec<(isize, isize)>>, map_width: us
 }
 
 fn part1(input: &str) -> u32 {
-    let mut antennas  = BTreeMap::<char, Vec<(isize, isize)>>::new();
-    input.lines().enumerate()
-    .for_each(|(y, line)| line.chars().enumerate().for_each(|(x, c)| match c {
-        'a'..='z' | 'A'..='Z' | '0'..='9'  => {
-            antennas.entry(c).and_modify(|v| v.push((x as isize, y as isize))).or_insert(vec![(x as isize, y as isize)]);
-        }
-        _ => {}
-    }));
-
+    let antennas = parse_input(input);
+    
     count_antinodes(&antennas, input.lines().count(), input.lines().next().unwrap().chars().count(), false)
 }
 
 fn part2(input: &str) -> u32 {
+    let antennas = parse_input(input);
+
+count_antinodes(&antennas, input.lines().count(), input.lines().next().unwrap().chars().count(), true)
+}
+
+fn parse_input(input: &str) -> BTreeMap<char, Vec<(isize, isize)>> {
     let mut antennas  = BTreeMap::<char, Vec<(isize, isize)>>::new();
     input.lines().enumerate()
     .for_each(|(y, line)| line.chars().enumerate().for_each(|(x, c)| match c {
@@ -75,8 +74,7 @@ fn part2(input: &str) -> u32 {
         }
         _ => {}
     }));
-
-    count_antinodes(&antennas, input.lines().count(), input.lines().next().unwrap().chars().count(), true)
+    antennas
 }
 
 

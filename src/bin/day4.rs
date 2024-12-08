@@ -1,12 +1,12 @@
 fn main() {
     let input = include_str!("../../inputs/day4.txt");
-    println!("Part 1: {}", &part1(&input));
-    println!("Part 2: {}", &part2(&input));
+    println!("Part 1: {}", &part1(input));
+    println!("Part 2: {}", &part2(input));
 
     divan::main();
 }
 
-fn find_words(chars: &Vec<Vec<char>>, word: &str) -> u32 {
+fn find_words(chars: &[Vec<char>], word: &str) -> u32 {
     let mut count = 0;
     for i in 0..chars.len() {
         for j in 0..chars[i].len() {
@@ -18,7 +18,7 @@ fn find_words(chars: &Vec<Vec<char>>, word: &str) -> u32 {
             let mut south_west = true;
             let mut west = true;
             let mut north_west = true;
-            if chars[i][j] == word.chars().nth(0).unwrap() {
+            if chars[i][j] == word.chars().next().unwrap() {
                 for (k, chr) in word[1..].chars().enumerate() {
                     let k = k + 1;
                     if north {
@@ -94,7 +94,7 @@ fn find_words(chars: &Vec<Vec<char>>, word: &str) -> u32 {
                         }
                     }
                 }
-                count += vec![north, north_east, east, south_east, south, south_west, west, north_west].iter().filter(|&x| *x).count() as u32;
+                count += [north, north_east, east, south_east, south, south_west, west, north_west].iter().filter(|&x| *x).count() as u32;
             }
         }
     }
@@ -102,12 +102,13 @@ fn find_words(chars: &Vec<Vec<char>>, word: &str) -> u32 {
     count
 }
 
-fn find_x(chars: &Vec<Vec<char>>, word: &str) -> u32 {
+fn find_x(chars: &[Vec<char>], word: &str) -> u32 {
     assert_eq!(word.len(), 3);
+    let mut word_chr = word.chars();
 
-    let first = word.chars().nth(0).unwrap();
-    let mid = word.chars().nth(1).unwrap();
-    let last = word.chars().nth(2).unwrap();
+    let first = word_chr.next().unwrap();
+    let mid = word_chr.next().unwrap();
+    let last = word_chr.next().unwrap();
 
     let mut count = 0;
     for i in 1..(chars.len() - 1) {
@@ -132,11 +133,11 @@ fn find_x(chars: &Vec<Vec<char>>, word: &str) -> u32 {
 }
 
 pub fn part1(input: &str) -> u32 {
-    find_words(&input.lines().map(|l| l.chars().collect()).collect(), "XMAS")
+    find_words(&input.lines().map(|l| l.chars().collect()).collect::<Vec<Vec<char>>>(), "XMAS")
 }
 
 pub fn part2(input: &str) -> u32 {
-    find_x(&input.lines().map(|l| l.chars().collect()).collect(), "MAS")
+    find_x(&input.lines().map(|l| l.chars().collect()).collect::<Vec<Vec<char>>>(), "MAS")
 }
 
 
