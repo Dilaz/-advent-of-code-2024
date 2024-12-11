@@ -147,6 +147,18 @@ bench = true
 harness = false
 test = false
 
+[[bin]]
+name = "day11"
+bench = false
+test = true
+
+[[bench]]
+name = "day11_bench"
+path = "src/bin/day11/bench.rs"
+bench = true
+harness = false
+test = false
+
 [dev-dependencies]
 divan = "0.1.16"
 
