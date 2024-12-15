@@ -1,10 +1,11 @@
 #[path = "../../utils.rs"]
 pub mod utils;
+pub use utils::Solution;
 use std::collections::HashSet;
 use glam::IVec2;
-pub use utils::Solution;
 use miette::Result;
 use itertools::Itertools;
+use rayon::prelude::*;
 
 pub struct Day12;
 
@@ -105,7 +106,7 @@ impl Solution<u32> for Day12 {
             
         }));
 
-        Ok(groups.into_iter().map(|group| {
+        Ok(groups.into_par_iter().map(|group| {
             let group_size = group.len() as u32;
             let corners = group.iter().map(|v| calc_corners(v, &group, map_height, map_width)).sum::<u32>();
             corners * group_size
