@@ -199,6 +199,7 @@ fn make_part2_move(map: &mut AoCMap, robot: &mut IVec2, instruction: &Instructio
     true
 }
 
+#[allow(dead_code)]
 fn print_map(map: &HashMap<IVec2, Obstacle>, robot: &IVec2, map_size: IVec2) {
     (0..map_size.y).for_each(|y| {
         (0..map_size.x).for_each(|x| {
